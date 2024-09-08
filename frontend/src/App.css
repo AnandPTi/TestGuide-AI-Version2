@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.container {
+  margin: 50px auto;
+  width: 80%;
+}
+
+input {
+  margin: 20px 0;
+}
+
+textarea {
+  margin: 20px 0;
+}
