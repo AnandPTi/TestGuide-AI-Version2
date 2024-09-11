@@ -1,0 +1,17 @@
+# Ignore environment files
+.env
+
+# Node.js
+/frontend/node_modules
+/frontend/.env
+
+# Python
+/backend/__pycache__/
+/backend/*.pyc
+/backend/.env
+
+# Ignore build files
+/frontend/build/
+/frontend/dist/
+/backend/venv/
+/backend/.venv/

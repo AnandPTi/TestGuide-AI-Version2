@@ -12,15 +12,15 @@
 # genai.configure(api_key="AIzaSyDpp8BBEMOveL5ul3pI0liujnKaNyCZi_A")
 # model = genai.GenerativeModel(model_name="gemini-1.5-pro")
 
-# prompt =  """Generate a detailed, step-by-step guide on how to test each functionality based on the provided screenshots. For each test case, include the following details:
+# prompt = """Provide a comprehensive, detailed guide for testing each functionality based on the provided screenshots. Each test case should include the following elements:
 
-#         1. **Description**: What is this test case about?
-#         2. **Pre-conditions**: What needs to be set up or ensured before starting the test?
-#         3. **Testing Steps**: Provide clear, step-by-step instructions on how to perform the test.
-#         4. **Expected Result**: What should happen if the feature works correctly?
+#     -Description: A clear and concise explanation of the purpose of the test.
+#     -Pre-conditions: Outline the necessary setup or prerequisites required before conducting the test (2-4 lines that clearly explain the environment, configurations, or data that need to be in place).
+#     -Testing Steps: Step-by-step instructions detailing how to execute the test. Ensure that the instructions are exhaustive, covering all possible conditions as would be expected in a real production environment.
+#     -Expected Result: Describe the expected outcome if the functionality operates as intended, highlighting the criteria for success.
+#     For multiple functionalities, break them down into individual sections, with each functionality clearly defined and the associated test cases outlined using the format above.
 
-#         The screenshots provided are as follows:
-#         """
+# """
 # response = model.generate_content([prompt, sample_file_2, sample_file_3])
 
 # Markdown(">" + response.text)
@@ -40,15 +40,7 @@ images=[]
 images.append(sample_file_2)
 images.append(sample_file_3)
 print(images)
-prompt = """Generate a detailed, step-by-step guide on how to test each functionality based on the provided screenshots. For each test case, include the following details:
 
-1. **Description**: What is this test case about?
-2. **Pre-conditions**: What needs to be set up or ensured before starting the test?
-3. **Testing Steps**: Provide clear, step-by-step instructions on how to perform the test.
-4. **Expected Result**: What should happen if the feature works correctly?
-
-The screenshots provided are as follows:
-"""
 
 # Generate content using the model
 response = model.generate_content([prompt, sample_file_2, sample_file_3])
