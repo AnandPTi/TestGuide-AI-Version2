@@ -1,1 +1,1 @@
-![Alt text for the image](relative/path/to/image.png)
+![Alt text for the image](assets/image.png)
