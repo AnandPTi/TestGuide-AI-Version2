@@ -1,7 +1,7 @@
 # import google.generativeai as genai
 # # import os
 
-# # genai.configure(api_key="AIzaSyDpp8BBEMOveL5ul3pI0liujnKaNyCZi_A")
+# # genai.configure(api_key="AIzacdcdfvevevwfdwscdcfvnKaNyCZi_A")
 # # model = genai.GenerativeModel("gemini-1.5-flash")
 # # response = model.generate_content("Write a story about a magic backpack.")
 # # print(response.text)
@@ -28,7 +28,7 @@ import google.generativeai as genai
 import PIL.Image
 
 # Configure API key and model
-genai.configure(api_key="AIzaSyDpp8BBEMOveL5ul3pI0liujnKaNyCZi_A")
+genai.configure(api_key="AIzaSyDpfeedvdscwefewdwedecyCZi_A")
 model = genai.GenerativeModel(model_name="gemini-1.5-pro")
 
 # Open images using PIL
