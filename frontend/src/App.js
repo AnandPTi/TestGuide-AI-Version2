@@ -51,9 +51,9 @@ const App = () => {
 
   return (
     <Container>
-      <Typography variant="h4" color="primary" gutterBottom>
+      {/* <Typography variant="h4" color="primary" gutterBottom>
         Upload Images & Generate Test
-      </Typography>
+      </Typography> */}
 
       <ImageUploader 
         images={images}
