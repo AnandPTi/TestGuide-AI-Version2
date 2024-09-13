@@ -14,7 +14,7 @@ const Container = styled('div')({
   backgroundColor: '#f0f4f8',
   minHeight: '100vh',
 });
-
+//modified
 const App = () => {
   const [images, setImages] = useState([]);
   const [context, setContext] = useState('');
