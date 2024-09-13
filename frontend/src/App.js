@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
-import {Typography} from '@mui/material';
 import { styled } from '@mui/system';
+import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import ImageUploader from './components/ImageUploader';
 import ResponsePopup from './components/ResponsePopup';
+import Header from './components/Header';
+import Footer from './components/Footer';
 import axios from 'axios';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    background: {
+      default: '#121212',
+      paper: '#1e1e1e',
+    },
+    text: {
+      primary: '#ffffff',
+    },
+  },
+});
 
 const Container = styled('div')({
   display: 'flex',
@@ -11,10 +26,9 @@ const Container = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   padding: '20px',
-  backgroundColor: '#f0f4f8',
   minHeight: '100vh',
 });
-//modified
+
 const App = () => {
   const [images, setImages] = useState([]);
   const [context, setContext] = useState('');
@@ -50,32 +64,108 @@ const App = () => {
   };
 
   return (
-    <Container>
-      {/* <Typography variant="h4" color="primary" gutterBottom>
-        Upload Images & Generate Test
-      </Typography> */}
-
-      <ImageUploader 
-        images={images}
-        context={context}
-        handleImageUpload={handleImageUpload}
-        setContext={setContext}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        error={error}
-      />
-
-      {showPopup && (
-        <ResponsePopup 
-          response={response}
-          closePopup={() => setShowPopup(false)} 
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Header />
+      <Container>
+        <ImageUploader 
+          images={images}
+          context={context}
+          handleImageUpload={handleImageUpload}
+          setContext={setContext}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          error={error}
         />
-      )}
-    </Container>
+
+        {showPopup && (
+          <ResponsePopup 
+            response={response}
+            closePopup={() => setShowPopup(false)} 
+          />
+        )}
+      </Container>
+      <Footer />
+    </ThemeProvider>
   );
 };
 
 export default App;
+
+// import React, { useState } from 'react';
+// import { styled } from '@mui/system';
+// import ImageUploader from './components/ImageUploader';
+// import ResponsePopup from './components/ResponsePopup';
+// import axios from 'axios';
+
+// const Container = styled('div')({
+//   display: 'flex',
+//   flexDirection: 'column',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   padding: '20px',
+//   backgroundColor: '#f0f4f8',
+//   minHeight: '100vh',
+// });
+// //modified
+// const App = () => {
+//   const [images, setImages] = useState([]);
+//   const [context, setContext] = useState('');
+//   const [loading, setLoading] = useState(false);
+//   const [response, setResponse] = useState('');
+//   const [error, setError] = useState(null);
+//   const [showPopup, setShowPopup] = useState(false);
+
+//   const handleImageUpload = (e) => {
+//     setImages([...e.target.files]);
+//   };
+
+//   const handleSubmit = async () => {
+//     setLoading(true);
+//     setError(null);
+//     setResponse('');
+
+//     const formData = new FormData();
+//     images.forEach((image) => formData.append('files', image));
+//     formData.append('context', context);
+
+//     try {
+//       const res = await axios.post('http://127.0.0.1:8000/upload_images/', formData, {
+//         headers: { 'Content-Type': 'multipart/form-data' },
+//       });
+//       setResponse(res.data['Generated Instructions']);
+//       setShowPopup(true);
+//     } catch (err) {
+//       setError('Failed to generate test instructions.');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <Container>
+
+//       <ImageUploader 
+//         images={images}
+//         context={context}
+//         handleImageUpload={handleImageUpload}
+//         setContext={setContext}
+//         handleSubmit={handleSubmit}
+//         loading={loading}
+//         error={error}
+//       />
+
+//       {showPopup && (
+//         <ResponsePopup 
+//           response={response}
+//           closePopup={() => setShowPopup(false)} 
+//         />
+//       )}
+//     </Container>
+//   );
+// };
+
+// export default App;
 
 // import React, { useState } from 'react';
 // import axios from 'axios';

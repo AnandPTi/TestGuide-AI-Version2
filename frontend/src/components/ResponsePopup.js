@@ -187,7 +187,7 @@ const ResponsePopup = ({ response, closePopup }) => {
           alignItems="center"
           justifyContent="space-between"
           p={2}
-          borderRadius="4px"
+          borderRadius="25px"
           boxShadow="0px 4px 12px rgba(0, 0, 0, 0.2)"
           zIndex="1300"
           width="250px"
