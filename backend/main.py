@@ -26,7 +26,7 @@ app.add_middleware(
 api_key = os.getenv("GENAI_API_KEY")
 # Now use the api_key in your code
 genai.configure(api_key=api_key)
-#genai.configure(api_key="AIzaSyC9hGO47X0LcqfAb4q-t2cVFs9eftfvxEA")
+
 model = genai.GenerativeModel(model_name="gemini-1.5-pro")
 
 # Folder to save uploaded images
