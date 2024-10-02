@@ -26,24 +26,32 @@
 # Markdown(">" + response.text)
 import google.generativeai as genai
 import PIL.Image
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
+# Configure the generative model
+api_key = os.getenv("GENAI_API_KEY")
+# Now use the api_key in your code
+genai.configure(api_key=api_key)
 # Configure API key and model
-genai.configure(api_key="AIzaSyDpfeedvdscwefewdwedecyCZi_A")
+# genai.configure(api_key="AIzaSyDpfeedvdscwefewdwedecyCZi_A")
 model = genai.GenerativeModel(model_name="gemini-1.5-pro")
-
+prompt = """provide all the text that are present in image"""
 # Open images using PIL
-sample_file_2 = PIL.Image.open('Screenshot from 2024-09-08 02-47-29.png')
-sample_file_3 = PIL.Image.open('Screenshot from 2024-09-08 02-46-43.png')
+sample_file_2 = PIL.Image.open('../assets/image.png')
+# sample_file_3 = PIL.Image.open('Screenshot from 2024-09-08 02-46-43.png')
 # print(sample_file_2)
 # Define the prompt
 images=[]
 images.append(sample_file_2)
-images.append(sample_file_3)
+# images.append(sample_file_3)
 print(images)
 
 
 # Generate content using the model
-response = model.generate_content([prompt, sample_file_2, sample_file_3])
+response = model.generate_content([prompt, sample_file_2])
 
 # Print the result
 print("Generated Instructions:")
