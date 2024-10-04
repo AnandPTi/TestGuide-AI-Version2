@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
-import { styled } from '@mui/system';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Login from './components/Login';
+import Signup from './components/Signup';
 import ImageUploader from './components/ImageUploader';
 import ResponsePopup from './components/ResponsePopup';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import axios from 'axios';
+import { styled } from '@mui/system';
+
 
 const darkTheme = createTheme({
   palette: {
@@ -19,7 +23,6 @@ const darkTheme = createTheme({
     },
   },
 });
-
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'column',
@@ -30,6 +33,37 @@ const Container = styled('div')({
 });
 
 const App = () => {
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setAuthenticated(true);
+    }
+  }, []);
+
+  const PrivateRoute = ({ element }) => (
+    authenticated ? element : <Navigate to="/login" replace />
+  );
+
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
+          <Route path="/signup" element={<Signup setAuthenticated={setAuthenticated} />} />
+          <Route path="/app" element={<PrivateRoute element={<MainApp />} />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </ThemeProvider>
+  );
+};
+
+const MainApp = () => {
   const [images, setImages] = useState([]);
   const [context, setContext] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,7 +86,10 @@ const App = () => {
 
     try {
       const res = await axios.post('http://127.0.0.1:8000/upload_images/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {
+                   'Content-Type': 'multipart/form-data',
+                   'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                 },
       });
       setResponse(res.data['Generated Instructions']);
       setShowPopup(true);
@@ -62,11 +99,64 @@ const App = () => {
       setLoading(false);
     }
   };
+  // const [images, setImages] = useState([]);
+  // const [context, setContext] = useState('');
+  // const [loading, setLoading] = useState(false);
+  // const [response, setResponse] = useState('');
+  // const [error, setError] = useState(null);
+  // const [showPopup, setShowPopup] = useState(false);
+  // const [uploadMessage, setUploadMessage] = useState(''); // Define uploadMessage and its setter
 
+  // const handleImageUpload = async (formData) => {
+  //   const response = await fetch('http://localhost:8000/upload_images/', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
+  //   if (!response.ok) {
+  //     throw new Error('Failed to upload images');
+  //   }
+  //   const data = await response.json();
+  //   setUploadMessage('Images uploaded successfully!'); // Set the upload message
+  //   console.log(data); // Do something with the response data
+  // };
+
+  // const handleSubmit = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   setResponse('');
+  
+  //   const formData = new FormData();
+  //   images.forEach((image) => formData.append('files', image));
+  //   formData.append('context', context);
+  
+  //   try {
+  //     const res = await axios.post('http://127.0.0.1:8000/upload_images/', formData, {
+  //       headers: {
+  //         'Content-Type': 'multipart/form-data',
+  //         'Authorization': `Bearer ${localStorage.getItem('token')}`,
+  //       },
+  //     });
+      
+  //     // Add these logs to debug the response
+  //     console.log('Response:', res.data);
+      
+  //     if (res.data && res.data['Generated Instructions']) {
+  //       setResponse(res.data['Generated Instructions']);
+  //       setShowPopup(true);  // Show popup if the response contains the instructions
+  //     } else {
+  //       setError('Instructions not found in response.');
+  //     }
+  //   } catch (err) {
+  //     setError('Failed to generate test instructions.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Header />
+      {/* <Header /> */}
       <Container>
         <ImageUploader 
           images={images}
@@ -85,12 +175,230 @@ const App = () => {
           />
         )}
       </Container>
-      <Footer />
+      {/* <Footer /> */}
     </ThemeProvider>
   );
 };
 
 export default App;
+
+
+// import React, { useState, useEffect } from 'react';
+// import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+// import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+// import Login from './components/Login';
+// import Signup from './components/Signup';
+// import ImageUploader from './components/ImageUploader';
+// import ResponsePopup from './components/ResponsePopup';
+// import Header from './components/Header';
+// import Footer from './components/Footer';
+// import axios from 'axios';
+
+// const darkTheme = createTheme({
+//   palette: {
+//     mode: 'dark',
+//     background: {
+//       default: '#121212',
+//       paper: '#1e1e1e',
+//     },
+//     text: {
+//       primary: '#ffffff',
+//     },
+//   },
+// });
+
+// const App = () => {
+//   const [authenticated, setAuthenticated] = useState(false);
+
+//   useEffect(() => {
+//     const token = localStorage.getItem('token');
+//     if (token) {
+//       setAuthenticated(true);
+//     }
+//   }, []);
+
+//   // Updated PrivateRoute logic to use `element` instead of `render`
+//   const PrivateRoute = ({ element, ...rest }) => (
+//     authenticated ? element : <Navigate to="/login" replace />
+//   );
+
+//   return (
+//     <ThemeProvider theme={darkTheme}>
+//       <CssBaseline />
+//       <Router>
+//         <Header />
+//         <Routes>
+//           <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
+//           <Route path="/signup" element={<Signup setAuthenticated={setAuthenticated} />} />
+//           <Route 
+//             path="/app" 
+//             element={<PrivateRoute element={<MainApp />} />} 
+//           />
+//           {/* Redirect from "/" to "/login" */}
+//           <Route path="/" element={<Navigate to="/login" replace />} />
+//         </Routes>
+//         <Footer />
+//       </Router>
+//     </ThemeProvider>
+//   );
+// };
+
+// const MainApp = () => {
+//   const [images, setImages] = useState([]);
+//   const [context, setContext] = useState('');
+//   const [loading, setLoading] = useState(false);
+//   const [response, setResponse] = useState('');
+//   const [error, setError] = useState(null);
+//   const [showPopup, setShowPopup] = useState(false);
+
+//   const handleImageUpload = (e) => {
+//     setImages([...e.target.files]);
+//   };
+
+//   const handleSubmit = async () => {
+//     setLoading(true);
+//     setError(null);
+//     setResponse('');
+
+//     const formData = new FormData();
+//     images.forEach((image) => formData.append('files', image));
+//     formData.append('context', context);
+
+//     try {
+//       const res = await axios.post('http://127.0.0.1:8000/upload_images/', formData, {
+//         headers: { 
+//           'Content-Type': 'multipart/form-data',
+//           'Authorization': `Bearer ${localStorage.getItem('token')}`,
+//         },
+//       });
+//       setResponse(res.data['Generated Instructions']);
+//       setShowPopup(true);
+//     } catch (err) {
+//       setError('Failed to generate test instructions.');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <ImageUploader 
+//         images={images}
+//         context={context}
+//         handleImageUpload={handleImageUpload}
+//         setContext={setContext}
+//         handleSubmit={handleSubmit}
+//         loading={loading}
+//         error={error}
+//       />
+
+//       {showPopup && (
+//         <ResponsePopup 
+//           response={response}
+//           closePopup={() => setShowPopup(false)} 
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default App;
+
+
+//****************************Earlier best working************************************************* */
+// import React, { useState } from 'react';
+// import { styled } from '@mui/system';
+// import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+// import ImageUploader from './components/ImageUploader';
+// import ResponsePopup from './components/ResponsePopup';
+// import Header from './components/Header';
+// import Footer from './components/Footer';
+// import axios from 'axios';
+
+// const darkTheme = createTheme({
+//   palette: {
+//     mode: 'dark',
+//     background: {
+//       default: '#121212',
+//       paper: '#1e1e1e',
+//     },
+//     text: {
+//       primary: '#ffffff',
+//     },
+//   },
+// });
+
+// const Container = styled('div')({
+//   display: 'flex',
+//   flexDirection: 'column',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+//   padding: '20px',
+//   minHeight: '100vh',
+// });
+
+// const App = () => {
+//   const [images, setImages] = useState([]);
+//   const [context, setContext] = useState('');
+//   const [loading, setLoading] = useState(false);
+//   const [response, setResponse] = useState('');
+//   const [error, setError] = useState(null);
+//   const [showPopup, setShowPopup] = useState(false);
+
+//   const handleImageUpload = (e) => {
+//     setImages([...e.target.files]);
+//   };
+
+//   const handleSubmit = async () => {
+//     setLoading(true);
+//     setError(null);
+//     setResponse('');
+
+//     const formData = new FormData();
+//     images.forEach((image) => formData.append('files', image));
+//     formData.append('context', context);
+
+//     try {
+//       const res = await axios.post('http://127.0.0.1:8000/upload_images/', formData, {
+//         headers: { 'Content-Type': 'multipart/form-data' },
+//       });
+//       setResponse(res.data['Generated Instructions']);
+//       setShowPopup(true);
+//     } catch (err) {
+//       setError('Failed to generate test instructions.');
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <ThemeProvider theme={darkTheme}>
+//       <CssBaseline />
+//       <Header />
+//       <Container>
+//         <ImageUploader 
+//           images={images}
+//           context={context}
+//           handleImageUpload={handleImageUpload}
+//           setContext={setContext}
+//           handleSubmit={handleSubmit}
+//           loading={loading}
+//           error={error}
+//         />
+
+//         {showPopup && (
+//           <ResponsePopup 
+//             response={response}
+//             closePopup={() => setShowPopup(false)} 
+//           />
+//         )}
+//       </Container>
+//       <Footer />
+//     </ThemeProvider>
+//   );
+// };
+
+// export default App;
 
 // import React, { useState } from 'react';
 // import { styled } from '@mui/system';

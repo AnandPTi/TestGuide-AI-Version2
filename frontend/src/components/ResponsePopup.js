@@ -208,6 +208,216 @@ const ResponsePopup = ({ response, closePopup }) => {
 
 export default ResponsePopup;
 
+// import React, { useState, useEffect } from 'react';
+// import { Box, Typography, IconButton, Snackbar, Alert, TextField, Button, ButtonGroup, Tooltip } from '@mui/material';
+// import CloseIcon from '@mui/icons-material/Close';
+// import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+// import MinimizeIcon from '@mui/icons-material/Minimize';
+// import RestoreIcon from '@mui/icons-material/Restore';
+// import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+// import ReactMarkdown from 'react-markdown';
+// import removeMarkdown from 'remove-markdown'; // Import the remove-markdown library
+
+// const ResponsePopup = ({ response, closePopup }) => {
+//   const [copySuccess, setCopySuccess] = useState(false);
+//   const [minimized, setMinimized] = useState(false); // Track minimized state
+//   const [editableContent, setEditableContent] = useState(response); // Track editable content
+//   const [isPreview, setIsPreview] = useState(false); // Track preview mode
+
+//   // Disable page scroll when the popup is open
+//   useEffect(() => {
+//     document.body.style.overflow = minimized ? 'auto' : 'hidden';
+//     return () => {
+//       document.body.style.overflow = 'auto'; // Re-enable scroll on cleanup
+//     };
+//   }, [minimized]);
+
+//   // Handle copy to clipboard
+//   const handleCopy = () => {
+//     navigator.clipboard.writeText(editableContent);
+//     setCopySuccess(true); // Show "copied" message
+//   };
+
+//   // Handle download as a text file (plain text without markdown syntax)
+//   const handleDownload = () => {
+//     let plainTextContent = removeMarkdown(editableContent);
+//     plainTextContent = plainTextContent.replace(/\*\*/g, ''); // Remove remaining **
+
+//     const blob = new Blob([plainTextContent], { type: 'text/plain' });
+//     const link = document.createElement('a');
+//     link.href = URL.createObjectURL(blob);
+//     link.download = 'generated_test_instructions.txt';
+//     link.click();
+//   };
+
+//   // Toggle between edit and preview modes
+//   const handleTogglePreview = (mode) => {
+//     setIsPreview(mode === 'preview');
+//   };
+
+//   return (
+//     <>
+//       {!minimized ? (
+//         <Box
+//           position="fixed"
+//           top="0"
+//           left="0"
+//           width="100vw"
+//           height="100vh"
+//           bgcolor="rgba(0, 0, 0, 0.7)" // Dark overlay
+//           display="flex"
+//           justifyContent="center"
+//           alignItems="center"
+//           zIndex="1300" // Ensure it's above all content
+//         >
+//           <Box
+//             width="90%"
+//             maxWidth="800px"
+//             bgcolor="#2e2e2e" // Dark grey background for popup
+//             borderRadius={4}
+//             p={3}
+//             boxShadow={24}
+//             display="flex"
+//             flexDirection="column"
+//             position="relative"
+//             overflow="hidden"
+//           >
+//             {/* Header with minimize, download, and close buttons */}
+//             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+//               <Typography variant="h6" style={{ color: '#fff', fontWeight: "bold" }}>
+//                 Generated Test Instructions
+//               </Typography>
+//               <Box>
+//                 <Tooltip title="Download">
+//                   <IconButton onClick={handleDownload} style={{ marginRight: '10px', color: '#fff' }}>
+//                     <ArrowCircleDownIcon style={{ fontSize: 27 }} />
+//                   </IconButton>
+//                 </Tooltip>
+//                 <Tooltip title="Minimize">
+//                   <IconButton onClick={() => setMinimized(true)} style={{ marginRight: '10px', color: '#fff' }}>
+//                     <MinimizeIcon style={{ fontSize: 25 }} />
+//                   </IconButton>
+//                 </Tooltip>
+//                 <Tooltip title="Close">
+//                   <IconButton onClick={closePopup} style={{ color: '#fff' }}>
+//                     <CloseIcon style={{ fontSize: 25 }} />
+//                   </IconButton>
+//                 </Tooltip>
+//               </Box>
+//             </Box>
+
+//             {/* Sticky Buttons Group */}
+//             <Box
+//               display="flex"
+//               justifyContent="space-between"
+//               alignItems="center"
+//               mb={2}
+//               p={1}
+//               bgcolor="#2e2e2e"
+//               position="sticky"
+//               top="0"
+//               zIndex="1400"
+//               style={{ borderBottom: '1px solid #444' }} // Sticky toolbar style
+//             >
+//               {/* Button group for preview and edit modes */}
+//               <ButtonGroup>
+//                 <Tooltip title="Edit the Response">
+//                   <Button
+//                     variant={!isPreview ? 'contained' : 'outlined'}
+//                     onClick={() => handleTogglePreview('edit')}
+//                     style={{ color: '#fff', backgroundColor: isPreview ? 'transparent' : '#3f51b5', border: '1px solid #fff' }}
+//                   >
+//                     Edit
+//                   </Button>
+//                 </Tooltip>
+//                 <Tooltip title="Preview the Response">
+//                   <Button
+//                     variant={isPreview ? 'contained' : 'outlined'}
+//                     onClick={() => handleTogglePreview('preview')}
+//                     style={{ color: '#fff', backgroundColor: isPreview ? '#3f51b5' : 'transparent', border: '1px solid #fff' }}
+//                   >
+//                     Preview
+//                   </Button>
+//                 </Tooltip>
+//               </ButtonGroup>
+
+//               {/* Copy button beside the Edit/Preview */}
+//               <Tooltip title="Copy to Clipboard">
+//                 <IconButton onClick={handleCopy} style={{ color: '#fff' }}>
+//                   <ContentCopyIcon />
+//                 </IconButton>
+//               </Tooltip>
+//             </Box>
+
+//             {/* Scrollable content with editable option or markdown preview */}
+//             <Box
+//               maxHeight="600px" // Limits the height, making it scrollable if content is long
+//               overflow="auto"  // Vertical scroll only
+//               p={2}
+//               border="1px solid #444"
+//               style={{ backgroundColor: '#1a1a1a', borderRadius: '8px', color: '#fff' }} // Black content area
+//             >
+//               {isPreview ? (
+//                 <ReactMarkdown>{editableContent}</ReactMarkdown>
+//               ) : (
+//                 <TextField
+//                   fullWidth
+//                   multiline
+//                   minRows={10}
+//                   value={editableContent}
+//                   onChange={(e) => setEditableContent(e.target.value)}
+//                   variant="outlined"
+//                   placeholder="Edit your instructions here..."
+//                   InputProps={{ style: { color: '#fff', backgroundColor: '#000' } }} // Input area styling
+//                 />
+//               )}
+//             </Box>
+
+//             {/* Snackbar for "Copied" message */}
+//             <Snackbar
+//               open={copySuccess}
+//               autoHideDuration={2000} // 2 seconds before auto-hide
+//               onClose={() => setCopySuccess(false)}
+//             >
+//               <Alert onClose={() => setCopySuccess(false)} severity="success" sx={{ width: '100%' }}>
+//                 Copied to clipboard!
+//               </Alert>
+//             </Snackbar>
+//           </Box>
+//         </Box>
+//       ) : (
+//         // Minimized bar at the bottom-right corner
+//         <Box
+//           position="fixed"
+//           bottom="20px"
+//           right="20px"
+//           bgcolor="#3f51b5"
+//           color="#fff"
+//           display="flex"
+//           alignItems="center"
+//           justifyContent="space-between"
+//           p={2}
+//           borderRadius="25px"
+//           boxShadow="0px 4px 12px rgba(0, 0, 0, 0.2)"
+//           zIndex="1300"
+//           width="250px"
+//           cursor="pointer"
+//           onClick={() => setMinimized(false)}
+//         >
+//           <Typography variant="body1">Show Instructions</Typography>
+//           <Tooltip title="Restore">
+//             <IconButton style={{ color: '#fff' }}>
+//               <RestoreIcon />
+//             </IconButton>
+//           </Tooltip>
+//         </Box>
+//       )}
+//     </>
+//   );
+// };
+
+// export default ResponsePopup;
+
 //***********************Better UI Dark UI********************************** */
 // import React, { useState, useEffect } from 'react';
 // import { Box, Typography, IconButton, Snackbar, Alert, TextField, Button, ButtonGroup, Tooltip } from '@mui/material';
