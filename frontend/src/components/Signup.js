@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Typography, Container } from '@mui/material';
+import { Button, TextField, Typography, Container, Link } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -35,7 +35,9 @@ const Signup = ({ setAuthenticated }) => {
       setError('Failed to create user. Please try again.'); 
     }
   };
-  
+  const handleLoginRedirect = () => {
+    navigate('/login'); // Redirect to the Register page
+  };
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
@@ -73,6 +75,12 @@ const Signup = ({ setAuthenticated }) => {
           Sign Up
         </Button>
       </form>
+      <Typography variant="body2" align="center" style={{ marginTop: '20px' }}>
+        Already have an account?{' '}
+        <Link component="button" variant="body2" onClick={handleLoginRedirect}>
+          Login here
+        </Link>
+      </Typography>
     </Container>
   );
 };

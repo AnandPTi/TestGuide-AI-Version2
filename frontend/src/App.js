@@ -10,6 +10,10 @@ import Footer from './components/Footer';
 import axios from 'axios';
 import { styled } from '@mui/system';
 
+import About from './components/About';
+import Pricing from './components/Pricing';
+import Solution from './components/solution';
+
 
 const darkTheme = createTheme({
   palette: {
@@ -29,7 +33,7 @@ const Container = styled('div')({
   alignItems: 'center',
   justifyContent: 'center',
   padding: '20px',
-  minHeight: '100vh',
+  minHeight: '80vh',
 });
 
 const App = () => {
@@ -54,6 +58,9 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
           <Route path="/signup" element={<Signup setAuthenticated={setAuthenticated} />} />
+          <Route path="/about" element={<About setAuthenticated={setAuthenticated} />} />
+          <Route path="/pricing" element={<Pricing setAuthenticated={setAuthenticated} />} />
+          <Route path="/solution" element={<Solution setAuthenticated={setAuthenticated} />} />
           <Route path="/app" element={<PrivateRoute element={<MainApp />} />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>

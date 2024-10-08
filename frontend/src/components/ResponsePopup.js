@@ -115,7 +115,7 @@ const ResponsePopup = ({ response, closePopup }) => {
                   <Button
                     variant={!isPreview ? 'contained' : 'outlined'}
                     onClick={() => handleTogglePreview('edit')}
-                    style={{ color: '#fff', backgroundColor: isPreview ? 'transparent' : '#3f51b5', border: '1px solid #fff' }}
+                    style={{ color: '#fff', backgroundColor: isPreview ? 'transparent' : '#3f51b5', border: '1px solid #fff',fontWeight: 'bold'}}
                   >
                     Edit
                   </Button>
@@ -124,16 +124,16 @@ const ResponsePopup = ({ response, closePopup }) => {
                   <Button
                     variant={isPreview ? 'contained' : 'outlined'}
                     onClick={() => handleTogglePreview('preview')}
-                    style={{ color: '#fff', backgroundColor: isPreview ? '#3f51b5' : 'transparent', border: '1px solid #fff' }}
+                    style={{ color: '#fff', backgroundColor: isPreview ? '#3f51b5' : 'transparent', border: '1px solid #fff', fontWeight: 'bold' }}
                   >
                     Preview
                   </Button>
                 </Tooltip>
               </ButtonGroup>
-
+{/* #3f51b5 */}
               {/* Copy button beside the Edit/Preview */}
               <Tooltip title="Copy to Clipboard">
-                <IconButton onClick={handleCopy} style={{ color: '#fff' }}>
+                <IconButton onClick={handleCopy} style={{ color: '#fff'}}>
                   <ContentCopyIcon />
                 </IconButton>
               </Tooltip>
@@ -179,7 +179,7 @@ const ResponsePopup = ({ response, closePopup }) => {
         // Minimized bar at the bottom-right corner
         <Box
           position="fixed"
-          bottom="20px"
+          bottom="120px"
           right="20px"
           bgcolor="#3f51b5"
           color="#fff"
@@ -189,18 +189,58 @@ const ResponsePopup = ({ response, closePopup }) => {
           p={2}
           borderRadius="25px"
           boxShadow="0px 4px 12px rgba(0, 0, 0, 0.2)"
-          zIndex="1300"
-          width="250px"
-          cursor="pointer"
-          onClick={() => setMinimized(false)}
+          zIndex="600"
+          width="222px"
+          sx={{
+            //cursor: 'pointer',
+            '&:hover': {
+              backgroundColor: '#fff', // Slightly lighter shade on hover
+              color:"#3f51b5",
+              boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.3)', // Slightly stronger shadow on hover
+              transition: 'all 0.3s ease-in-out', // Smooth transition for hover effects
+            },
+          }}
         >
-          <Typography variant="body1">Show Instructions</Typography>
+          <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+            Show Instructions
+          </Typography>
+
           <Tooltip title="Restore">
-            <IconButton style={{ color: '#fff' }}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent the Box's click handler from triggering
+                setMinimized(false); // Trigger restore action only on icon click
+              }}
+              style={{ color: 'black' }}
+            >
               <RestoreIcon />
             </IconButton>
           </Tooltip>
         </Box>
+        // <Box
+        //   position="fixed"
+        //   bottom="20px"
+        //   right="20px"
+        //   bgcolor="#3f51b5"
+        //   color="#fff"
+        //   display="flex"
+        //   alignItems="center"
+        //   justifyContent="space-between"
+        //   p={2}
+        //   borderRadius="25px"
+        //   boxShadow="0px 4px 12px rgba(0, 0, 0, 0.2)"
+        //   zIndex="1300"
+        //   width="250px"
+        //   cursor="pointer"
+        //   onClick={() => setMinimized(false)}
+        // >
+        //   <Typography variant="body1">Show Instructions</Typography>
+        //   <Tooltip title="Restore">
+        //     <IconButton style={{ color: '#fff' }}>
+        //       <RestoreIcon />
+        //     </IconButton>
+        //   </Tooltip>
+        // </Box>
       )}
     </>
   );

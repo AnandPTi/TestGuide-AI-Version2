@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Typography, Container } from '@mui/material';
+import { Button, TextField, Typography, Container, Link } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,13 +20,18 @@ const Login = ({ setAuthenticated }) => {
       if (res.data.access_token) {
         localStorage.setItem('token', res.data.access_token);
         setAuthenticated(true);
-        navigate('/app');
+        navigate('/app'); // Redirect to the app's main page upon successful login
       } else {
         setError('Failed to log in. No token received.');
       }
     } catch (err) {
       setError('Invalid username/email or password');
     }
+  };
+
+  // Function to navigate to the register page
+  const handleRegisterRedirect = () => {
+    navigate('/signup'); // Redirect to the Register page
   };
 
   return (
@@ -57,11 +62,88 @@ const Login = ({ setAuthenticated }) => {
           Login
         </Button>
       </form>
+
+      <Typography variant="body2" align="center" style={{ marginTop: '20px' }}>
+        Don't have an account?{' '}
+        <Link component="button" variant="body2" onClick={handleRegisterRedirect}>
+          Register here
+        </Link>
+      </Typography>
     </Container>
   );
 };
 
 export default Login;
+
+
+
+//******************ALL FINE************************************************************* */
+
+
+// import React, { useState } from 'react';
+// import { Button, TextField, Typography, Container } from '@mui/material';
+// import axios from 'axios';
+// import { useNavigate } from 'react-router-dom';
+
+// const Login = ({ setAuthenticated }) => {
+//   const [usernameOrEmail, setUsernameOrEmail] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [error, setError] = useState('');
+//   const navigate = useNavigate();
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const res = await axios.post('http://127.0.0.1:8000/token', new URLSearchParams({
+//         username: usernameOrEmail,
+//         password,
+//       }));
+
+//       if (res.data.access_token) {
+//         localStorage.setItem('token', res.data.access_token);
+//         setAuthenticated(true);
+//         navigate('/app');
+//       } else {
+//         setError('Failed to log in. No token received.');
+//       }
+//     } catch (err) {
+//       setError('Invalid username/email or password');
+//     }
+//   };
+
+//   return (
+//     <Container maxWidth="sm">
+//       <Typography variant="h4" gutterBottom>
+//         Login
+//       </Typography>
+//       <form onSubmit={handleSubmit}>
+//         <TextField
+//           fullWidth
+//           label="Username or Email"
+//           value={usernameOrEmail}
+//           onChange={(e) => setUsernameOrEmail(e.target.value)}
+//           margin="normal"
+//           required
+//         />
+//         <TextField
+//           fullWidth
+//           label="Password"
+//           type="password"
+//           value={password}
+//           onChange={(e) => setPassword(e.target.value)}
+//           margin="normal"
+//           required
+//         />
+//         {error && <Typography color="error">{error}</Typography>}
+//         <Button type="submit" variant="contained" color="primary" fullWidth>
+//           Login
+//         </Button>
+//       </form>
+//     </Container>
+//   );
+// };
+
+// export default Login;
 
 // import React, { useState } from 'react';
 // import { Button, TextField, Typography, Container } from '@mui/material';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Grid, Card, CardMedia, CircularProgress, Typography, IconButton, Dialog, DialogContent, Tooltip, ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { Button, TextField, Grid, Card, CardMedia, CircularProgress, Typography, IconButton, Dialog, DialogContent, Tooltip, ThemeProvider, createTheme, CssBaseline,Box } from '@mui/material';
 import { Add, Close } from '@mui/icons-material';
 
 // Create a dark theme
@@ -42,10 +42,27 @@ const ImageUploader = ({ context, handleImageUpload, setContext, handleSubmit, l
       <CssBaseline />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', padding: '30px', backgroundColor: '#2e2e2e', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)', borderRadius: '15px', maxWidth: '600px' }}>
         
-        {/* App Title */}
-        <Typography variant="h4" component="h1" style={{ color: '#90caf9', marginBottom: '10px' }}>
+        {/* App Title
+        <Typography variant="h4" component="h1" style={{ color: '#3f51b5', marginBottom: '10px' }}>
+          TestGuideAI
+        </Typography> */}
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            background: 'linear-gradient(90deg, #3f51b5, #6370b5)', // Gradient color effect
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent', // Makes the gradient apply only to the text
+            fontWeight: 'bold',
+            marginBottom: '20px',
+            letterSpacing: '2px', // Slightly increased spacing for elegance
+            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', // Subtle shadow effect for depth
+            fontSize: '2.5rem', // Slightly larger font size for more impact
+          }}
+        >
           TestGuideAI
         </Typography>
+
 
         {/* Subheading */}
         <Typography variant="subtitle1" component="h2" style={{ color: '#b0bec5', marginBottom: '20px' }}>
@@ -61,17 +78,9 @@ const ImageUploader = ({ context, handleImageUpload, setContext, handleSubmit, l
             handleImageUpload(e);
             setImages([...images, ...e.target.files]);
           }}
-          style={{ display: 'none' }}
+          style={{ display: 'none'}}
           id="file-input"
         />
-        <label htmlFor="file-input">
-          <Tooltip title="Add Image" arrow>
-            <IconButton color="primary" component="span">
-              <Add fontSize="large" />
-            </IconButton>
-          </Tooltip>
-        </label>
-
         {/* TextField for Context */}
         <TextField
           label="Optional Context"
@@ -81,10 +90,36 @@ const ImageUploader = ({ context, handleImageUpload, setContext, handleSubmit, l
           fullWidth
           value={context}
           onChange={(e) => setContext(e.target.value)}
-          style={{ marginBottom: '20px', backgroundColor: '#424242' }}
+          style={{ marginBottom: '5px', backgroundColor: '#424242' }}
           InputLabelProps={{ style: { color: '#b0bec5' } }}
           InputProps={{ style: { color: '#ffffff' } }}
         />
+        <label htmlFor="file-input">
+          <Tooltip title="Add Image" arrow>
+            <IconButton
+              component="span"
+              sx={{
+                color: '#fff', // Icon color
+                marginBottom: '20px',
+                '&:hover': {
+                  color: '#3f51b5', 
+                },
+              }}
+            >
+              <Add fontSize="large" />
+            </IconButton>
+          </Tooltip>
+        </label>
+
+        {/* <label htmlFor="file-input">
+          <Tooltip title="Add Image" arrow>
+            <IconButton color="primary" component="span">
+              <Add fontSize="large" />
+            </IconButton>
+          </Tooltip>
+        </label> */}
+
+
 
         {/* Images Grid */}
         <Grid container spacing={2}>
@@ -115,13 +150,59 @@ const ImageUploader = ({ context, handleImageUpload, setContext, handleSubmit, l
         {/* Submit Button */}
         <Button
           variant="contained"
+          onClick={handleSubmit}
+          disabled={loading || images.length === 0}
+          sx={{
+            marginTop: '20px',
+            padding: '10px 20px',
+            borderRadius: '25px',
+            backgroundColor: '#3f51b5', // Default color
+            color: '#fff', // Text color
+            textTransform: 'none',
+            '&:hover': {
+              backgroundColor: '#fff', // Background color on hover
+              color: '#3f51b5', // Text color on hover
+              border: '1px solid #3f51b5', // Optional border on hover for better styling
+            },
+            transition: 'background-color 0.3s ease, color 0.3s ease', // Smooth transitions
+          }}
+        >
+         {/* {loading ? <CircularProgress size={24} color="inherit" /> : 'Describe Testing Instructions'} */}
+         {loading ? (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                //gap: '10px', // Spacing between spinner and label
+                //flexDirection: 'column',
+                gap: '10px', // Space between spinner and message
+                textTransform: 'none', // Disable uppercase transformation
+              }}
+            >
+              <CircularProgress 
+                size={30} // Slightly larger size for better visibility
+                thickness={4.5} // Thicker spinner for more impact
+                sx={{ color: '#fff' }} // Custom color matching your theme
+              />
+              <Typography variant="body2" sx={{ color: '#fff', fontWeight: 'bold' }}>
+                Hold on, please!
+              </Typography>
+            </Box>
+          ) : (
+            'Describe Testing Instructions'
+          )}
+        </Button>
+
+        {/* <Button
+          variant="contained"
           color="primary"
           onClick={handleSubmit}
           disabled={loading || images.length === 0}
           style={{ marginTop: '20px', padding: '10px 20px', borderRadius: '25px' }}
         >
           {loading ? <CircularProgress size={24} color="inherit" /> : 'Describe Testing Instructions'}
-        </Button>
+        </Button> */}
 
         {error && <Typography color="error" style={{ marginTop: '10px' }}>{error}</Typography>}
 
