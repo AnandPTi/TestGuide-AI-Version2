@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Form, File, UploadFile
+from fastapi import FastAPI, Depends, HTTPException, status, Form, File, UploadFile, BackgroundTasks
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
@@ -14,6 +14,9 @@ import google.generativeai as genai
 import PIL.Image as Image
 import shutil
 from fastapi.middleware.cors import CORSMiddleware
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 
 # Load environment variables
@@ -44,7 +47,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+emailpassword = os.getenv("EMAIL_PASSWORD")
 # Initialize Generative AI
 api_key = os.getenv("GENAI_API_KEY")
 genai.configure(api_key=api_key)
@@ -111,6 +114,45 @@ def authenticate_user(db: Session, username_or_email: str, password: str):
         return False
     return user
 
+
+# Email sending function
+def send_email(name: str, contact: str, note: str):
+    sender_email = "ananpr@iitbhilai.ac.in"  # Replace with your email
+    receiver_email = "shunilkumar952515@gmail.com"  # Replace with the receiver email
+    password = emailpassword  # Replace with your email password
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Subscription Request"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+
+    text = f"Name: {name}\nContact: {contact}\nNote: {note}"
+
+    part = MIMEText(text, "plain")
+    message.attach(part)
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to send email")
+
+# Route to handle email sending
+@app.post("/send-email/")
+async def send_subscription_email(
+    name: str = Form(...),
+    contact: str = Form(...),
+    note: str = Form(...),
+    background_tasks: BackgroundTasks = None
+):
+    # Call the send_email function in the background to avoid blocking the request
+    background_tasks.add_task(send_email, name, contact, note)
+    return {"message": "Subscription email is being sent"}
+
+
+
 # Routes for user signup and login
 @app.post("/signup")
 async def signup(email: str = Form(...), username: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
@@ -128,6 +170,8 @@ async def signup(email: str = Form(...), username: str = Form(...), password: st
     db.refresh(new_user)
     return {"msg": "User registered successfully"}
 
+
+
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
@@ -141,7 +185,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "username": user.username}
 
 @app.get("/users/me")
 async def read_users_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):

@@ -130,7 +130,6 @@ const ResponsePopup = ({ response, closePopup }) => {
                   </Button>
                 </Tooltip>
               </ButtonGroup>
-{/* #3f51b5 */}
               {/* Copy button beside the Edit/Preview */}
               <Tooltip title="Copy to Clipboard">
                 <IconButton onClick={handleCopy} style={{ color: '#fff'}}>
@@ -217,30 +216,7 @@ const ResponsePopup = ({ response, closePopup }) => {
             </IconButton>
           </Tooltip>
         </Box>
-        // <Box
-        //   position="fixed"
-        //   bottom="20px"
-        //   right="20px"
-        //   bgcolor="#3f51b5"
-        //   color="#fff"
-        //   display="flex"
-        //   alignItems="center"
-        //   justifyContent="space-between"
-        //   p={2}
-        //   borderRadius="25px"
-        //   boxShadow="0px 4px 12px rgba(0, 0, 0, 0.2)"
-        //   zIndex="1300"
-        //   width="250px"
-        //   cursor="pointer"
-        //   onClick={() => setMinimized(false)}
-        // >
-        //   <Typography variant="body1">Show Instructions</Typography>
-        //   <Tooltip title="Restore">
-        //     <IconButton style={{ color: '#fff' }}>
-        //       <RestoreIcon />
-        //     </IconButton>
-        //   </Tooltip>
-        // </Box>
+
       )}
     </>
   );

@@ -3,17 +3,15 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import About from './components/About';
 import ImageUploader from './components/ImageUploader';
 import ResponsePopup from './components/ResponsePopup';
+import Pricing from './components/Pricing';
+import Solution from './components/solution';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import axios from 'axios';
 import { styled } from '@mui/system';
-
-import About from './components/About';
-import Pricing from './components/Pricing';
-import Solution from './components/solution';
-
 
 const darkTheme = createTheme({
   palette: {
@@ -27,6 +25,7 @@ const darkTheme = createTheme({
     },
   },
 });
+
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'column',
@@ -38,29 +37,52 @@ const Container = styled('div')({
 
 const App = () => {
   const [authenticated, setAuthenticated] = useState(false);
+  const [loadingAuth, setLoadingAuth] = useState(true); // New loading state
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       setAuthenticated(true);
+    } else {
+      setAuthenticated(false);
     }
+    setLoadingAuth(false); // Set loading to false once the token check is done
   }, []);
+
+  // Show a loading indicator or a placeholder while checking auth state
+  if (loadingAuth) {
+    return <div>Loading...</div>; // Replace with a spinner or your preferred loading component
+  }
 
   const PrivateRoute = ({ element }) => (
     authenticated ? element : <Navigate to="/login" replace />
   );
+  // const [authenticated, setAuthenticated] = useState(false);
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     setAuthenticated(true);
+  //   } else {
+  //     setAuthenticated(false);
+  //   } 
+  // }, []);
+
+  // const PrivateRoute = ({ element }) => (
+  //   authenticated ? element : <Navigate to="/login" replace />
+  // );
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Router>
-        <Header />
+        <Header authenticated={authenticated} setAuthenticated={setAuthenticated} />
         <Routes>
           <Route path="/login" element={<Login setAuthenticated={setAuthenticated} />} />
           <Route path="/signup" element={<Signup setAuthenticated={setAuthenticated} />} />
-          <Route path="/about" element={<About setAuthenticated={setAuthenticated} />} />
-          <Route path="/pricing" element={<Pricing setAuthenticated={setAuthenticated} />} />
-          <Route path="/solution" element={<Solution setAuthenticated={setAuthenticated} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/solution" element={<Solution />} />
           <Route path="/app" element={<PrivateRoute element={<MainApp />} />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
@@ -106,6 +128,22 @@ const MainApp = () => {
       setLoading(false);
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   // const [images, setImages] = useState([]);
   // const [context, setContext] = useState('');
   // const [loading, setLoading] = useState(false);

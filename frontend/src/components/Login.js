@@ -19,6 +19,7 @@ const Login = ({ setAuthenticated }) => {
 
       if (res.data.access_token) {
         localStorage.setItem('token', res.data.access_token);
+        localStorage.setItem('username', res.data.username);
         setAuthenticated(true);
         navigate('/app'); // Redirect to the app's main page upon successful login
       } else {
