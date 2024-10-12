@@ -102,6 +102,7 @@ const Header = ({ authenticated, setAuthenticated }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
                 sx={{ mt: '45px' }}
+                disableAutoFocus 
               >
                 <MenuItem onClick={handleMenuClose}>
                   <Typography textAlign="center" sx={{ fontWeight: 'bold' }}>

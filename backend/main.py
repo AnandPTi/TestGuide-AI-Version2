@@ -17,6 +17,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from pytz import timezone
+from datetime import datetime
 
 
 # Load environment variables
@@ -123,7 +125,7 @@ class SavedResponses(Base):
     user_id = Column(Integer, index=True)
     heading = Column(String)  # Add heading field
     response_text = Column(String)
-    timestamp = Column(String, default=str(datetime.utcnow()))
+    timestamp = Column(String, default=str(datetime.now(timezone("Asia/Kolkata"))))
 
 # class SavedResponse(Base):
 #     __tablename__ = "saved_responses"
