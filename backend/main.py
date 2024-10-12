@@ -115,6 +115,186 @@ def authenticate_user(db: Session, username_or_email: str, password: str):
     return user
 
 
+#*******saved response*****************
+# Add a new model for saved responses
+class SavedResponses(Base):
+    __tablename__ = "saved_response"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, index=True)
+    heading = Column(String)  # Add heading field
+    response_text = Column(String)
+    timestamp = Column(String, default=str(datetime.utcnow()))
+
+# class SavedResponse(Base):
+#     __tablename__ = "saved_responses"
+#     id = Column(Integer, primary_key=True, index=True)
+#     user_id = Column(Integer, index=True)
+#     response_text = Column(String)
+#     timestamp = Column(String, default=str(datetime.utcnow()))
+
+
+Base.metadata.create_all(bind=engine)
+
+# Route to save a response
+@app.post("/save-response/")
+async def save_response(response_text: str = Form(...), heading: str = Form(...), token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    # Validate the user by token
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+
+    user = get_user_by_email(db, email=email)
+    if user is None:
+        raise credentials_exception
+
+    # Save the response with the heading
+    saved_response = SavedResponses(user_id=user.id, heading=heading, response_text=response_text)
+    db.add(saved_response)
+    db.commit()
+    db.refresh(saved_response)
+
+    return {"message": "Response saved successfully", "saved_response_id": saved_response.id}
+
+
+# @app.post("/save-response/")
+# async def save_response(response_text: str = Form(...), token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+#     # Validate the user by token
+#     credentials_exception = HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Could not validate credentials",
+#         headers={"WWW-Authenticate": "Bearer"},
+#     )
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         email: str = payload.get("sub")
+#         if email is None:
+#             raise credentials_exception
+#     except jwt.PyJWTError:
+#         raise credentials_exception
+
+#     user = get_user_by_email(db, email=email)
+#     if user is None:
+#         raise credentials_exception
+
+#     # Save the response to the database
+#     saved_response = SavedResponse(user_id=user.id, response_text=response_text)
+#     db.add(saved_response)
+#     db.commit()
+#     db.refresh(saved_response)
+
+#     return {"message": "Response saved successfully", "saved_response_id": saved_response.id}
+
+# Route to get all saved responses for a user
+@app.get("/saved-responses/")
+async def get_saved_responses(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    # Validate the user by token
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = get_user_by_email(db, email=email)
+    if user is None:
+        raise credentials_exception
+
+    # Fetch saved responses for the user
+    saved_response = db.query(SavedResponses).filter(SavedResponses.user_id == user.id).all()
+
+    # Return the responses including heading and timestamp
+    return {
+        "saved_responses": [
+            {
+                "id": sr.id,
+                "heading": sr.heading,
+                "response_text": sr.response_text,
+                "timestamp": sr.timestamp
+            } for sr in saved_response
+        ]
+    }
+
+from fastapi import HTTPException
+
+# Route to delete a saved response
+@app.delete("/saved-responses/{response_id}")
+async def delete_saved_response(response_id: int, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    # Validate the user by token (same as before)
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise credentials_exception
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    user = get_user_by_email(db, email=email)
+    if user is None:
+        raise credentials_exception
+
+    # Find the response to delete
+    saved_response = db.query(SavedResponses).filter(SavedResponses.id == response_id, SavedResponses.user_id == user.id).first()
+
+    if saved_response is None:
+        raise HTTPException(status_code=404, detail="Response not found")
+
+    # Delete the response
+    db.delete(saved_response)
+    db.commit()
+
+    return {"message": "Response deleted successfully"}
+
+# @app.get("/saved-responses/")
+# async def get_saved_responses(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+#     # Validate the user by token
+#     credentials_exception = HTTPException(
+#         status_code=status.HTTP_401_UNAUTHORIZED,
+#         detail="Could not validate credentials",
+#         headers={"WWW-Authenticate": "Bearer"},
+#     )
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         email: str = payload.get("sub")
+#         if email is None:
+#             raise credentials_exception
+#     except jwt.ExpiredSignatureError:
+#         raise HTTPException(status_code=401, detail="Token has expired")
+#     except jwt.InvalidTokenError:
+#         raise HTTPException(status_code=401, detail="Invalid token")
+#     user = get_user_by_email(db, email=email)
+#     if user is None:
+#         raise credentials_exception
+
+#     # Fetch saved responses for the user
+#     saved_response = db.query(SavedResponses).filter(SavedResponses.user_id == user.id).all()
+
+#     return {"saved_responses": [{"id": sr.id, "response_text": sr.response_text, "timestamp": sr.timestamp} for sr in saved_response]}
+
+
+
+
 # Email sending function
 def send_email(name: str, contact: str, note: str):
     sender_email = "ananpr@iitbhilai.ac.in"  # Replace with your email
@@ -255,6 +435,8 @@ async def upload_images(files: list[UploadFile] = File(...), context: str = Form
         "Generated Instructions": response.text,
         "Deleted Files": saved_image_paths
     }
+
+
 # from fastapi import FastAPI, Depends, HTTPException, status, Form, File, UploadFile
 # from sqlalchemy import Column, Integer, String, create_engine
 # from sqlalchemy.ext.declarative import declarative_base

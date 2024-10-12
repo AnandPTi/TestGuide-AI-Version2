@@ -9,6 +9,7 @@ import ResponsePopup from './components/ResponsePopup';
 import Pricing from './components/Pricing';
 import Solution from './components/solution';
 import Header from './components/Header';
+import SavedResponses from './components/SavedResponses';
 import Footer from './components/Footer';
 import axios from 'axios';
 import { styled } from '@mui/system';
@@ -84,6 +85,7 @@ const App = () => {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/solution" element={<Solution />} />
           <Route path="/app" element={<PrivateRoute element={<MainApp />} />} />
+          <Route path="/saved-responses" element={<PrivateRoute element={<SavedResponses />} />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
         <Footer />
@@ -128,16 +130,35 @@ const MainApp = () => {
       setLoading(false);
     }
   };
+  
+  return (
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      {/* <Header /> */}
+      <Container>
+        <ImageUploader 
+          images={images}
+          context={context}
+          handleImageUpload={handleImageUpload}
+          setContext={setContext}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          error={error}
+        />
 
+        {showPopup && (
+          <ResponsePopup 
+            response={response}
+            closePopup={() => setShowPopup(false)} 
+          />
+        )}
+      </Container>
+      {/* <Footer /> */}
+    </ThemeProvider>
+  );
+};
 
-
-
-
-
-
-
-
-
+export default App;
 
 
 
@@ -197,36 +218,6 @@ const MainApp = () => {
   //     setLoading(false);
   //   }
   // };
-  
-  return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      {/* <Header /> */}
-      <Container>
-        <ImageUploader 
-          images={images}
-          context={context}
-          handleImageUpload={handleImageUpload}
-          setContext={setContext}
-          handleSubmit={handleSubmit}
-          loading={loading}
-          error={error}
-        />
-
-        {showPopup && (
-          <ResponsePopup 
-            response={response}
-            closePopup={() => setShowPopup(false)} 
-          />
-        )}
-      </Container>
-      {/* <Footer /> */}
-    </ThemeProvider>
-  );
-};
-
-export default App;
-
 
 // import React, { useState, useEffect } from 'react';
 // import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
