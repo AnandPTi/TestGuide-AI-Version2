@@ -70,7 +70,7 @@ const Signup = ({ setAuthenticated }) => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '75vh',
+        minHeight: '80vh',
         paddingBottom: '30px', // Adjust this value based on the footer height
       }}
     >

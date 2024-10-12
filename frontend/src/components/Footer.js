@@ -7,7 +7,7 @@ import { GitHub, Email, Telegram } from '@mui/icons-material';
 const Footer = () => {
   return (
     <div style={{
-      position: 'fixed', 
+      //position: 'fixed', 
       bottom: 0, 
       left: 0, 
       right: 0, 
