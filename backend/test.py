@@ -33,6 +33,93 @@ response = model.generate_content([prompt, sample_file_2])
 print("Generated Instructions:")
 
 print(response.text)
+
+
+
+# import os
+# import google.generativeai as genai
+
+# # Configure the generative model
+# api_key = os.getenv("LATEST_GENAI_API_KEY")
+# # Now use the api_key in your code
+# genai.configure(api_key=api_key)
+
+# model = genai.get_model('imagen-3.0-generate-001') 
+
+# result = model.predict(prompt='A realistic portrait of a cat wearing a hat')
+
+
+
+
+
+# imagen = genai.ImageGenerationModel("imagen-3.0-generate-001")
+# # Generate images with the model
+# result = imagen.generate_images(
+#     prompt="Fuzzy bunnies in my kitchen",
+#     num_images=4,
+#     safety_settings={"category": "BLOCK_ONLY_HIGH"},
+#     aspect_ratios=["3:4"],
+#     negative_prompt="Outside"
+# )
+
+# # Handle the result
+# for i, image in enumerate(result['images']):
+#     image_data = image['image']
+    
+#     # Save the images locally
+#     with open(f"generated_image_{i}.png", "wb") as img_file:
+#         img_file.write(image_data)
+
+#     print(f"Image {i+1} saved as 'generated_image_{i}.png'.")
+
+# # You can open the images using PIL if necessary
+# from PIL import Image
+# for i in range(4):
+#     img = Image.open(f"generated_image_{i}.png")
+#     img.show()
+
+
+
+# import os
+# import google.generativeai as genai
+
+# # # Configure the generative model
+# api_key = os.getenv("LATEST_GENAI_API_KEY")
+# # Now use the api_key in your code
+# genai.configure(api_key=api_key)
+
+# imagen = genai.ImageGenerationModel("imagen-3.0-generate-001")
+
+# result = imagen.generate_images(
+#     prompt="Fuzzy bunnies in my kitchen",
+#     number_of_images=4,
+#     safety_filter_level="block_only_high",
+#     person_generation="allow_adult",
+#     aspect_ratio="3:4",
+#     negative_prompt="Outside",
+# )
+
+# for image in result.images:
+#   print(image)
+
+# # The output should look similar to this:
+# # <vertexai.preview.vision_models.GeneratedImage object at 0x78f3396ef370>
+# # <vertexai.preview.vision_models.GeneratedImage object at 0x78f3396ef700>
+# # <vertexai.preview.vision_models.GeneratedImage object at 0x78f33953c2b0>
+# # <vertexai.preview.vision_models.GeneratedImage object at 0x78f33953c280>
+
+# for image in result.images:
+#   # Open and display the image using your local operating system.
+#   image._pil_image.show()
+
+
+
+
+
+
+
+
+
 # import google.generativeai as genai
 # # import os
 
